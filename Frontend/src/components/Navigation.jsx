@@ -24,9 +24,9 @@ const Navigation = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Auto-detect active section on scroll
+  // Auto-detect active section on scroll - FIXED VERSION
   useEffect(() => {
-    const sections = navItems.map((item) => document.querySelector(item.href));
+    const sections = document.querySelectorAll("section[id]");
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -36,19 +36,22 @@ const Navigation = () => {
           }
         });
       },
-      { threshold: 0.5, rootMargin: "-80px 0px -80px 0px" }
+      {
+        threshold: 0.3, // Changed from 0.5 to 0.3 for better detection
+        rootMargin: "-100px 0px -100px 0px",
+      }
     );
 
     sections.forEach((section) => {
-      if (section) observer.observe(section);
+      observer.observe(section);
     });
 
     return () => {
       sections.forEach((section) => {
-        if (section) observer.unobserve(section);
+        observer.unobserve(section);
       });
     };
-  }, []);
+  }, []); // Empty dependency array is fine now
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -104,12 +107,12 @@ const Navigation = () => {
             : "bg-transparent"
         }`}
       >
-        <div className="container mx-auto px-6 py-5">
+        <div className="container mx-auto px-6 py-3">
           <div className="flex items-center justify-between">
             {/* Logo with elegant glow */}
             <motion.div
               whileHover={{ scale: 1.08 }}
-              className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-orange-400 via-amber-300 to-yellow-400 
+              className="text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-orange-400 via-amber-300 to-yellow-400 
                          bg-clip-text text-transparent tracking-wide cursor-pointer
                          drop-shadow-[0_0_20px_rgba(251,146,60,0.4)] transition-all"
               onClick={() => scrollToSection("#hero")}
@@ -118,7 +121,7 @@ const Navigation = () => {
             </motion.div>
 
             {/* Desktop nav links */}
-            <div className="hidden md:flex items-center space-x-2">
+            <div className="hidden md:flex items-center space-x-1">
               {navItems.map((item, index) => (
                 <motion.button
                   key={item.label}
@@ -130,7 +133,7 @@ const Navigation = () => {
                   aria-current={
                     activeSection === item.href ? "page" : undefined
                   }
-                  className={`relative font-semibold px-5 py-2.5 rounded-lg transition-all duration-300 ${
+                  className={`relative font-semibold px-4 py-2 rounded-lg transition-all duration-300 ${
                     activeSection === item.href
                       ? "text-orange-300 bg-white/10 shadow-md"
                       : "text-white/90 hover:text-orange-200 hover:bg-white/5"
@@ -171,7 +174,7 @@ const Navigation = () => {
                 whileTap={{ scale: 0.95 }}
                 className="bg-gradient-to-r from-orange-500 via-amber-500 to-orange-400 
                            hover:from-orange-400 hover:to-amber-400 
-                           text-white font-bold rounded-full px-7 py-3 shadow-lg
+                           text-white font-bold rounded-full px-6 py-2 shadow-lg
                            border border-orange-300/30 transition-all duration-300"
               >
                 Get Started
@@ -180,7 +183,7 @@ const Navigation = () => {
 
             {/* Mobile menu button */}
             <motion.button
-              className="md:hidden w-9 h-9 flex flex-col justify-center items-center space-y-1.5 relative z-50 mobile-menu-button"
+              className="md:hidden w-8 h-8 flex flex-col justify-center items-center space-y-1.5 relative z-50 mobile-menu-button"
               whileTap={{ scale: 0.9 }}
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle navigation menu"
@@ -189,22 +192,22 @@ const Navigation = () => {
               <motion.span
                 animate={{
                   rotate: isOpen ? 45 : 0,
-                  y: isOpen ? 8 : 0,
+                  y: isOpen ? 7 : 0,
                 }}
-                className="w-7 h-0.5 bg-gradient-to-r from-orange-400 to-amber-300 rounded-full shadow-[0_0_10px_rgba(251,146,60,0.5)]"
+                className="w-6 h-0.5 bg-gradient-to-r from-orange-400 to-amber-300 rounded-full shadow-[0_0_10px_rgba(251,146,60,0.5)]"
               />
               <motion.span
                 animate={{
                   opacity: isOpen ? 0 : 1,
                 }}
-                className="w-7 h-0.5 bg-gradient-to-r from-orange-400 to-amber-300 rounded-full shadow-[0_0_10px_rgba(251,146,60,0.5)]"
+                className="w-6 h-0.5 bg-gradient-to-r from-orange-400 to-amber-300 rounded-full shadow-[0_0_10px_rgba(251,146,60,0.5)]"
               />
               <motion.span
                 animate={{
                   rotate: isOpen ? -45 : 0,
-                  y: isOpen ? -8 : 0,
+                  y: isOpen ? -7 : 0,
                 }}
-                className="w-7 h-0.5 bg-gradient-to-r from-orange-400 to-amber-300 rounded-full shadow-[0_0_10px_rgba(251,146,60,0.5)]"
+                className="w-6 h-0.5 bg-gradient-to-r from-orange-400 to-amber-300 rounded-full shadow-[0_0_10px_rgba(251,146,60,0.5)]"
               />
             </motion.button>
           </div>

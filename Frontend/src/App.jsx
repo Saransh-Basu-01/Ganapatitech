@@ -1,5 +1,6 @@
 import React from "react";
 import Navigation from "./components/Navigation";
+import ServiceSection from "./components/ServiceSection";
 
 const App = () => {
   return (
@@ -30,14 +31,9 @@ const App = () => {
         </h2>
       </section>
 
-      {/* Services Section - Warm Orange/Amber */}
-      <section
-        id="services"
-        className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-orange-950 to-slate-900"
-      >
-        <h2 className="text-5xl md:text-6xl font-bold text-amber-300 drop-shadow-2xl">
-          Services
-        </h2>
+      {/* Services Section - Wrapped with proper ID */}
+      <section id="services" className="min-h-screen">
+        <ServiceSection />
       </section>
 
       {/* Team Section - Soft Purple/Blue */}
