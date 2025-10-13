@@ -1,9 +1,8 @@
 import React from "react";
+import ServiceSection from "./components/ServiceSection";
 const App = () => {
   return (
-    <div className="bg-blue-600 text-white text-3xl font-bold h-screen flex items-center justify-center">
-      Tailwind v4 is Working 🚀
-    </div>
+    <ServiceSection/>
   );
 }
 
