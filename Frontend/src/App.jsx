@@ -1,27 +1,18 @@
 import React from "react";
 import Navigation from "./components/Navigation";
 import ServiceSection from "./components/ServiceSection";
-
+import HeroSection from "./components/HeroSection";
+import CursorAnimation from "./components/CursorAnimation";
 const App = () => {
   return (
     <div className="bg-slate-900 text-white">
+      <CursorAnimation />
       <Navigation />
 
-      {/* Hero Section - Soft Blue with Orange accents */}
-      <section
-        id="hero"
-        className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-800 via-blue-900 to-slate-900 relative overflow-hidden"
-      >
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-orange-400 rounded-full filter blur-[100px]"></div>
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-500 rounded-full filter blur-[120px]"></div>
-        </div>
-        <h1 className="text-6xl md:text-8xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500 drop-shadow-2xl z-10 animate-pulse">
-          Hero Section
-        </h1>
+      <section id="hero " className="min-h-screen relative overflow-hidden">
+        <HeroSection />
       </section>
 
-      {/* About Section - Soft Teal */}
       <section
         id="about"
         className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-900 via-cyan-900 to-slate-900"
@@ -31,12 +22,10 @@ const App = () => {
         </h2>
       </section>
 
-      {/* Services Section - Wrapped with proper ID */}
       <section id="services" className="min-h-screen">
         <ServiceSection />
       </section>
 
-      {/* Team Section - Soft Purple/Blue */}
       <section
         id="team"
         className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-950 via-blue-900 to-slate-900"
