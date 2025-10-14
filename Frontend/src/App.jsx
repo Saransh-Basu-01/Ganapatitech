@@ -58,17 +58,3 @@ const App = () => {
 };
 
 export default App;
-// import Navigation from "./components/Navigation";
-// import HeroSection from "./components/HeroSection";
-// import ServiceSection from "./components/ServiceSection";
-// import CursorAnimation from "./components/CursorAnimation"
-// const App = () => {
-//   return (
-//     <div>
-//       <HeroSection/>
-//       <CursorAnimation/>
-//       <ServiceSection/>
-//     </div>
-//   );
-// };
-// export default App;
