@@ -23,8 +23,7 @@ const Navigation = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // Auto-detect active section on scroll - FIXED VERSION
+//  Auto-detect active section on scroll - FIXED VERSION
   useEffect(() => {
     const sections = document.querySelectorAll("section[id]");
 
@@ -53,6 +52,7 @@ const Navigation = () => {
     };
   }, []); // Empty dependency array is fine now
 
+ 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (isOpen) {
@@ -290,3 +290,4 @@ const Navigation = () => {
 };
 
 export default Navigation;
+
