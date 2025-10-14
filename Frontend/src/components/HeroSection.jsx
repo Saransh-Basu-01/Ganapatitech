@@ -286,27 +286,6 @@ const HeroSection = () => {
             />
           </div>
         </motion.div>
-
-        {/* Image indicator dots */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2 }}
-          className="absolute bottom-20 right-8 flex flex-col gap-2"
-        >
-          {images.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentImageIndex(index)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                index === currentImageIndex
-                  ? "bg-orange-400 h-8"
-                  : "bg-slate-600 hover:bg-slate-500"
-              }`}
-              aria-label={`Go to image ${index + 1}`}
-            />
-          ))}
-        </motion.div>
       </div>
     </section>
   );
