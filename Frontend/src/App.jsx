@@ -8,8 +8,7 @@ const App = () => {
     <div className="bg-slate-900 text-white">
       <CursorAnimation />
       <Navigation />
-
-      <section id="hero " className="min-h-screen relative overflow-hidden">
+      <section id="hero ">
         <HeroSection />
       </section>
 
@@ -22,7 +21,7 @@ const App = () => {
         </h2>
       </section>
 
-      <section id="services" className="min-h-screen">
+      <section id="services">
         <ServiceSection />
       </section>
 
@@ -59,3 +58,17 @@ const App = () => {
 };
 
 export default App;
+// import Navigation from "./components/Navigation";
+// import HeroSection from "./components/HeroSection";
+// import ServiceSection from "./components/ServiceSection";
+// import CursorAnimation from "./components/CursorAnimation"
+// const App = () => {
+//   return (
+//     <div>
+//       <HeroSection/>
+//       <CursorAnimation/>
+//       <ServiceSection/>
+//     </div>
+//   );
+// };
+// export default App;

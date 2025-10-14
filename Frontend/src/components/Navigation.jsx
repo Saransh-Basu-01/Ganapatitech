@@ -25,33 +25,33 @@ const Navigation = () => {
   }, []);
 
   // Auto-detect active section on scroll - FIXED VERSION
-  useEffect(() => {
-    const sections = document.querySelectorAll("section[id]");
+  // useEffect(() => {
+  //   const sections = document.querySelectorAll("section[id]");
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(`#${entry.target.id}`);
-          }
-        });
-      },
-      {
-        threshold: 0.3, // Changed from 0.5 to 0.3 for better detection
-        rootMargin: "-100px 0px -100px 0px",
-      }
-    );
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       entries.forEach((entry) => {
+  //         if (entry.isIntersecting) {
+  //           setActiveSection(`#${entry.target.id}`);
+  //         }
+  //       });
+  //     },
+  //     {
+  //       threshold: 0.3, // Changed from 0.5 to 0.3 for better detection
+  //       rootMargin: "-100px 0px -100px 0px",
+  //     }
+  //   );
 
-    sections.forEach((section) => {
-      observer.observe(section);
-    });
+  //   sections.forEach((section) => {
+  //     observer.observe(section);
+  //   });
 
-    return () => {
-      sections.forEach((section) => {
-        observer.unobserve(section);
-      });
-    };
-  }, []); // Empty dependency array is fine now
+  //   return () => {
+  //     sections.forEach((section) => {
+  //       observer.unobserve(section);
+  //     });
+  //   };
+  // }, []); // Empty dependency array is fine now
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -290,3 +290,4 @@ const Navigation = () => {
 };
 
 export default Navigation;
+

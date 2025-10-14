@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import "./ParticleBackground.css";
 
-// --- Import background images ---
 import bg1 from "../assets/bg1.jpeg";
 import bg2 from "../assets/bg2.jpeg";
 import bg3 from "../assets/bg3.jpeg";
@@ -19,10 +18,10 @@ const HeroSection = () => {
   const canvasRef = useRef(null);
   const animRef = useRef(null);
 
-  // --- Background slideshow images ---
+ 
   const images = [bg1, bg2, bg3, bg4, bg5, bg6, bg7, bg8, bg9, bg10];
 
-  // --- Auto-rotate background images ---
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -142,7 +141,7 @@ const HeroSection = () => {
   return (
     <section id="hero" className="min-h-screen relative overflow-hidden">
       {/* Background slideshow */}
-      <div className="fixed inset-0 w-full h-full z-0">
+      <div className="absolute inset-0 w-full h-full z-0">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentImageIndex}
@@ -162,7 +161,7 @@ const HeroSection = () => {
         </AnimatePresence>
 
         {/* Gradient overlays */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-red-900 opacity-20"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-red-900 opacity-50"></div>
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/40"></div>
       </div>
 
