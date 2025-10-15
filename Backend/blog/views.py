@@ -9,7 +9,7 @@ class BlogViewSet(viewsets.ModelViewSet):
     queryset = Blog.objects.all().order_by('-created_at')
     serializer_class = BlogSerializer
     filter_backends = [filters.SearchFilter]
-    search_fields = ['title', 'content']  # Frontend can search blogs
+    search_fields = ['title', 'content']  
 
 # ---------------------------
 # BlogCategory ViewSet
