@@ -1,87 +1,98 @@
 from rest_framework import serializers
-from .models import Project, ProjectCategory, Technology, ProjectImage
-
-
-class ProjectCategorySerializer(serializers.ModelSerializer):
-    projects_count = serializers.IntegerField(source='projects.count', read_only=True)
-    
-    class Meta:
-        model = ProjectCategory
-        fields = ['id', 'name', 'slug', 'description', 'icon', 'projects_count', 'created_at']
-        read_only_fields = ['slug']
+from .models import Portfolio, PortfolioCategory, Technology, PortfolioImage
 
 
 class TechnologySerializer(serializers.ModelSerializer):
-    projects_count = serializers.IntegerField(source='projects.count', read_only=True)
-    
     class Meta:
         model = Technology
-        fields = ['id', 'name', 'slug', 'icon', 'color', 'projects_count', 'created_at']
-        read_only_fields = ['slug']
+        fields = ['id', 'name', 'slug', 'icon', 'color']
 
 
-class ProjectImageSerializer(serializers.ModelSerializer):
+class PortfolioCategorySerializer(serializers.ModelSerializer):
+    projects_count = serializers.IntegerField(
+        source='portfolios.count',
+        read_only=True
+    )
+    
     class Meta:
-        model = ProjectImage
+        model = PortfolioCategory
+        fields = [
+            'id', 'name', 'slug', 'description', 'icon',
+            'order', 'is_active', 'projects_count',
+            'created_at', 'updated_at'
+        ]
+        read_only_fields = ['id', 'slug', 'created_at', 'updated_at']
+
+
+class PortfolioImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PortfolioImage
         fields = ['id', 'image', 'caption', 'order']
 
 
-class ProjectListSerializer(serializers.ModelSerializer):
-    """Serializer for project list view"""
-    category = ProjectCategorySerializer(read_only=True)
+class PortfolioListSerializer(serializers.ModelSerializer):
+    """Lightweight serializer for list views"""
+    category = PortfolioCategorySerializer(read_only=True)
     technologies = TechnologySerializer(many=True, read_only=True)
     
     class Meta:
-        model = Project
+        model = Portfolio
         fields = [
-            'id', 'title', 'slug', 'client_name', 'category', 'technologies',
-            'short_description', 'featured_image', 'project_url',
-            'is_featured', 'views_count', 'completed_date', 'created_at'
+            'id', 'title', 'slug', 'short_description',
+            'category', 'technologies', 'thumbnail', 'image',
+            'client', 'completion_date', 'featured',
+            'is_published', 'view_count', 'created_at'
         ]
 
 
-class ProjectDetailSerializer(serializers.ModelSerializer):
-    """Serializer for project detail view"""
-    category = ProjectCategorySerializer(read_only=True)
+class PortfolioDetailSerializer(serializers.ModelSerializer):
+    """Detailed serializer with all information"""
+    category = PortfolioCategorySerializer(read_only=True)
     technologies = TechnologySerializer(many=True, read_only=True)
-    gallery_images = ProjectImageSerializer(many=True, read_only=True)
+    gallery_images = PortfolioImageSerializer(many=True, read_only=True)
     
     class Meta:
-        model = Project
+        model = Portfolio
         fields = [
-            'id', 'title', 'slug', 'client_name', 'category', 'technologies',
-            'short_description', 'description', 'case_study',
-            'featured_image', 'gallery_images', 'project_url', 'github_url',
-            'metrics', 'is_featured', 'views_count',
-            'completed_date', 'created_at', 'updated_at'
+            'id', 'title', 'slug', 'description', 'short_description',
+            'category', 'technologies', 'client', 'project_url',
+            'github_url', 'demo_link', 'start_date', 'completion_date',
+            'image', 'thumbnail', 'gallery_images', 'featured',
+            'is_published', 'order', 'view_count',
+            'created_at', 'updated_at'
         ]
+        read_only_fields = ['id', 'slug', 'view_count', 'created_at', 'updated_at']
 
 
-class ProjectCreateUpdateSerializer(serializers.ModelSerializer):
-    """Serializer for creating/updating projects"""
+class PortfolioCreateUpdateSerializer(serializers.ModelSerializer):
+    """Serializer for creating/updating portfolios"""
+    technology_ids = serializers.PrimaryKeyRelatedField(
+        queryset=Technology.objects.all(),
+        many=True,
+        source='technologies',
+        required=False
+    )
+    category_id = serializers.PrimaryKeyRelatedField(
+        queryset=PortfolioCategory.objects.all(),
+        source='category',
+        write_only=True
+    )
     
     class Meta:
-        model = Project
+        model = Portfolio
         fields = [
-            'title', 'client_name', 'category', 'technologies',
-            'short_description', 'description', 'case_study',
-            'featured_image', 'project_url', 'github_url',
-            'metrics', 'status', 'is_featured', 'order', 'completed_date'
+            'id', 'title', 'slug', 'description', 'short_description',
+            'category_id', 'technology_ids', 'client', 'project_url',
+            'github_url', 'demo_link', 'start_date', 'completion_date',
+            'image', 'thumbnail', 'featured', 'is_published', 'order'
         ]
+        read_only_fields = ['id', 'slug']
     
-    def create(self, validated_data):
-        technologies = validated_data.pop('technologies', [])
-        project = Project.objects.create(**validated_data)
-        project.technologies.set(technologies)
-        return project
-    
-    def update(self, instance, validated_data):
-        technologies = validated_data.pop('technologies', None)
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        instance.save()
-        
-        if technologies is not None:
-            instance.technologies.set(technologies)
-        
-        return instance
+    def validate(self, data):
+        """Custom validation"""
+        if data.get('start_date') and data.get('completion_date'):
+            if data['start_date'] > data['completion_date']:
+                raise serializers.ValidationError(
+                    "Start date cannot be after completion date"
+                )
+        return data

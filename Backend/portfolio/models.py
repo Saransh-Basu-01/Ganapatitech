@@ -1,136 +1,180 @@
 from django.db import models
-from django.contrib.auth import get_user_model
 from django.utils.text import slugify
-from ckeditor_uploader.fields import RichTextUploadingField
+from django.core.validators import URLValidator
+from django.core.exceptions import ValidationError
 
-User = get_user_model()
 
-
-class ProjectCategory(models.Model):
-    """Portfolio project category"""
-    name = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(max_length=100, unique=True, blank=True)
-    description = models.TextField(blank=True)
-    icon = models.CharField(max_length=50, blank=True, help_text='Icon class name (e.g., fa-web)')
+class PortfolioCategory(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    slug = models.SlugField(unique=True, blank=True, max_length=255)
+    description = models.TextField(blank=True, help_text="Category description")
+    icon = models.CharField(
+        max_length=50,
+        blank=True,
+        help_text="Icon class (e.g., fa-code, fa-mobile)"
+    )
+    order = models.PositiveIntegerField(default=0, help_text="Display order")
+    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+    updated_at = models.DateTimeField(auto_now=True)
+
     class Meta:
-        db_table = 'portfolio_categories'
-        verbose_name = 'Project Category'
-        verbose_name_plural = 'Project Categories'
-        ordering = ['name']
-    
-    def __str__(self):
-        return self.name
-    
+        ordering = ['order', 'name']
+        verbose_name = 'Portfolio Category'
+        verbose_name_plural = 'Portfolio Categories'
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
 
 
 class Technology(models.Model):
-    """Technologies used in projects"""
+    """Separate model for technologies for better filtering"""
     name = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(max_length=100, unique=True, blank=True)
-    icon = models.ImageField(upload_to='technologies/', blank=True, null=True)
-    color = models.CharField(max_length=7, default='#000000', help_text='Hex color code')
+    slug = models.SlugField(unique=True, blank=True, max_length=100)
+    icon = models.CharField(max_length=50, blank=True)
+    color = models.CharField(max_length=7, blank=True, help_text="Hex color code")
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     class Meta:
-        db_table = 'technologies'
+        ordering = ['name']
         verbose_name = 'Technology'
         verbose_name_plural = 'Technologies'
-        ordering = ['name']
-    
-    def __str__(self):
-        return self.name
-    
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
+    def __str__(self):
+        return self.name
 
-class Project(models.Model):
-    """Portfolio project model"""
-    STATUS_CHOICES = (
-        ('draft', 'Draft'),
-        ('published', 'Published'),
-        ('archived', 'Archived'),
-    )
-    
+
+class Portfolio(models.Model):
+    # Basic Information
     title = models.CharField(max_length=255)
-    slug = models.SlugField(max_length=255, unique=True, blank=True)
-    client_name = models.CharField(max_length=255, blank=True)
-    
-    category = models.ForeignKey(ProjectCategory, on_delete=models.SET_NULL, null=True, related_name='projects')
-    technologies = models.ManyToManyField(Technology, related_name='projects', blank=True)
-    
-    short_description = models.TextField(max_length=300, help_text='Brief project description')
-    description = RichTextUploadingField(help_text='Full project description')
-    case_study = RichTextUploadingField(blank=True, help_text='Detailed case study')
-    
-    featured_image = models.ImageField(upload_to='portfolio/featured/')
-    
-    project_url = models.URLField(blank=True, help_text='Live project URL')
-    github_url = models.URLField(blank=True, help_text='GitHub repository URL')
-    
-    # Metrics stored as JSON
-    metrics = models.JSONField(
-        default=dict,
+    slug = models.SlugField(unique=True, blank=True, max_length=255)
+    description = models.TextField()
+    short_description = models.CharField(
+        max_length=200,
         blank=True,
-        help_text='Project metrics/results as JSON (e.g., {"conversions": "150%", "users": "10k+"})'
+        help_text="Brief description for cards/lists"
     )
     
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
-    is_featured = models.BooleanField(default=False)
+    # Project Details
+    technologies = models.ManyToManyField(
+        Technology,
+        related_name='portfolios',
+        blank=True
+    )
+    client = models.CharField(max_length=255, blank=True)
+    project_url = models.URLField(
+        blank=True,
+        validators=[URLValidator()],
+        help_text="Live project URL"
+    )
+    github_url = models.URLField(
+        blank=True,
+        validators=[URLValidator()],
+        help_text="GitHub repository URL"
+    )
+    demo_link = models.URLField(
+        blank=True,
+        validators=[URLValidator()],
+        help_text="Demo video or presentation link"
+    )
     
-    views_count = models.PositiveIntegerField(default=0)
-    order = models.PositiveIntegerField(default=0, help_text='Display order (lower = first)')
+    # Dates
+    start_date = models.DateField(null=True, blank=True)
+    completion_date = models.DateField(null=True, blank=True)
     
-    completed_date = models.DateField(null=True, blank=True)
+    # Media
+    image = models.ImageField(
+        upload_to='portfolio/images/%Y/%m/%d/',
+        blank=True,
+        null=True,
+        help_text="Main project image"
+    )
+    thumbnail = models.ImageField(
+        upload_to='portfolio/thumbnails/%Y/%m/%d/',
+        blank=True,
+        null=True,
+        help_text="Thumbnail for cards/lists"
+    )
+    
+    # Categorization
+    category = models.ForeignKey(
+        PortfolioCategory,
+        on_delete=models.PROTECT,
+        related_name='portfolios'
+    )
+    
+    # Status & Display
+    featured = models.BooleanField(
+        default=False,
+        help_text="Display on homepage"
+    )
+    is_published = models.BooleanField(
+        default=True,
+        help_text="Visible to public"
+    )
+    order = models.PositiveIntegerField(
+        default=0,
+        help_text="Display order (lower appears first)"
+    )
+    
+    # Metrics (optional)
+    view_count = models.PositiveIntegerField(default=0, editable=False)
+    
+    # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
-        db_table = 'portfolio_projects'
-        verbose_name = 'Project'
-        verbose_name_plural = 'Projects'
-        ordering = ['order', '-completed_date']
+        ordering = ['-featured', 'order', '-completion_date', '-created_at']
+        verbose_name = 'Portfolio Project'
+        verbose_name_plural = 'Portfolio Projects'
         indexes = [
-            models.Index(fields=['slug']),
-            models.Index(fields=['status']),
-            models.Index(fields=['order']),
+            models.Index(fields=['featured', 'is_published']),
+            models.Index(fields=['category', 'is_published']),
         ]
-    
-    def __str__(self):
-        return self.title
-    
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
+        if not self.short_description and self.description:
+            self.short_description = self.description[:197] + '...' if len(self.description) > 200 else self.description
         super().save(*args, **kwargs)
-    
-    def increment_views(self):
-        """Increment project view count"""
-        self.views_count += 1
-        self.save(update_fields=['views_count'])
+
+    def __str__(self):
+        return self.title
+
+    def increment_view_count(self):
+        """Increment view count"""
+        self.view_count += 1
+        self.save(update_fields=['view_count'])
 
 
-class ProjectImage(models.Model):
-    """Gallery images for projects"""
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='gallery_images')
-    image = models.ImageField(upload_to='portfolio/gallery/')
+class PortfolioImage(models.Model):
+    """Additional images for portfolio gallery"""
+    portfolio = models.ForeignKey(
+        Portfolio,
+        on_delete=models.CASCADE,
+        related_name='gallery_images'
+    )
+    image = models.ImageField(upload_to='portfolio/gallery/%Y/%m/%d/')
     caption = models.CharField(max_length=255, blank=True)
     order = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     class Meta:
-        db_table = 'portfolio_project_images'
-        verbose_name = 'Project Image'
-        verbose_name_plural = 'Project Images'
-        ordering = ['order', 'created_at']
-    
+        ordering = ['order', 'id']
+        verbose_name = 'Portfolio Image'
+        verbose_name_plural = 'Portfolio Images'
+
     def __str__(self):
-        return f"Image for {self.project.title}"
+        return f"{self.portfolio.title} - Image {self.id}"

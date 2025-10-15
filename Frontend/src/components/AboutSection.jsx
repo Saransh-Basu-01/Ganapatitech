@@ -101,7 +101,7 @@ const AboutSection = () => {
               {/* Neon background on hover */}
               <div
                 className="absolute inset-0 -z-10 rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500 
-                      bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 blur-3xl animate-pulse"
+                      bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 blur-3xl"
               ></div>
 
               <div className="relative z-10 bg-gray-800 rounded-2xl p-8 shadow-lg transition-shadow duration-500">
@@ -146,7 +146,7 @@ const AboutSection = () => {
                 {/* Neon background on hover */}
                 <div
                   className="absolute inset-0 -z-10 rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500 
-                      bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 blur-3xl animate-pulse"
+                      bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 blur-3xl"
                 ></div>
 
                 <div className="relative z-10 bg-gray-800 rounded-2xl p-6 shadow-lg text-center transition-shadow duration-500">
@@ -178,7 +178,7 @@ const AboutSection = () => {
           {/* Neon background on hover */}
           <div
             className="absolute inset-0 -z-10 rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500 
-                      bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 blur-3xl animate-pulse"
+                      bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 blur-3xl "
           ></div>
 
           <div className="relative z-10 bg-gray-800 rounded-2xl p-8 shadow-lg">
@@ -214,7 +214,7 @@ const AboutSection = () => {
           {/* Neon background on hover */}
           <div
             className="absolute inset-0 -z-10 rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500 
-                      bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 blur-3xl animate-pulse"
+                      bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 blur-3xl "
           ></div>
 
           <div className="relative z-10 bg-gray-800 rounded-2xl p-10 shadow-lg">

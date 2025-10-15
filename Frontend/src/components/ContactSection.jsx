@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -9,6 +10,7 @@ import {
   Check,
   AlertCircle,
 } from "lucide-react";
+import { contactAPI } from "../services/contactAPI";
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
@@ -83,25 +85,16 @@ const ContactSection = () => {
     setIsSubmitting(true);
     setFormStatus({ type: "", message: "" });
 
-    // Simulate API call (Replace with actual Django API call later)
     try {
-      // Future: Replace with actual API endpoint
-      // const response = await fetch('http://localhost:8000/api/contact/', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData),
-      // });
-
-      // Simulate delay
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // Submit to Django API
+      const response = await contactAPI.submitMessage(formData);
 
       setFormStatus({
         type: "success",
-        message:
-          "Thank you! Your message has been sent successfully. We'll get back to you soon.",
+        message: response.message || "Thank you! Your message has been sent successfully. We'll get back to you soon.",
       });
 
-      // Reset form
+      // Reset form on success
       setFormData({
         name: "",
         email: "",
@@ -109,11 +102,33 @@ const ContactSection = () => {
         subject: "",
         message: "",
       });
+
     } catch (error) {
-      setFormStatus({
-        type: "error",
-        message: "Oops! Something went wrong. Please try again later.",
-      });
+      console.error('Contact form submission error:', error);
+      
+      // Handle validation errors
+      if (error.response && error.response.data) {
+        const errors = error.response.data;
+        let errorMessage = "Please fix the following errors:\n";
+        
+        Object.keys(errors).forEach((key) => {
+          if (Array.isArray(errors[key])) {
+            errorMessage += `${key}: ${errors[key].join(', ')}\n`;
+          } else {
+            errorMessage += `${key}: ${errors[key]}\n`;
+          }
+        });
+        
+        setFormStatus({
+          type: "error",
+          message: errorMessage,
+        });
+      } else {
+        setFormStatus({
+          type: "error",
+          message: "Oops! Something went wrong. Please try again later.",
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -160,7 +175,7 @@ const ContactSection = () => {
               className="relative group rounded-2xl transition-all duration-500"
             >
               {/* Neon glow on hover */}
-              <div className="absolute inset-0 -z-10 rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500 bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 blur-3xl animate-pulse"></div>
+              <div className="absolute inset-0 -z-10 rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500 bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 blur-3xl"></div>
 
               <div className="relative z-10 bg-gray-800 rounded-2xl p-6 shadow-lg text-center h-full">
                 <motion.div
@@ -223,6 +238,7 @@ const ContactSection = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
+                    minLength={2}
                     className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all"
                     placeholder="John Doe"
                   />
@@ -301,6 +317,7 @@ const ContactSection = () => {
                     value={formData.message}
                     onChange={handleChange}
                     required
+                    minLength={10}
                     rows="5"
                     className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all resize-none"
                     placeholder="Tell us about your project..."
@@ -312,18 +329,18 @@ const ContactSection = () => {
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className={`flex items-center gap-2 p-4 rounded-lg ${
+                    className={`flex items-start gap-2 p-4 rounded-lg ${
                       formStatus.type === "success"
                         ? "bg-green-500/20 text-green-300 border border-green-500/50"
                         : "bg-red-500/20 text-red-300 border border-red-500/50"
                     }`}
                   >
                     {formStatus.type === "success" ? (
-                      <Check className="w-5 h-5" />
+                      <Check className="w-5 h-5 flex-shrink-0 mt-0.5" />
                     ) : (
-                      <AlertCircle className="w-5 h-5" />
+                      <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                     )}
-                    <p className="text-sm">{formStatus.message}</p>
+                    <p className="text-sm whitespace-pre-line">{formStatus.message}</p>
                   </motion.div>
                 )}
 

@@ -175,7 +175,7 @@ const TeamSection = () => {
           viewport={{ once: true }}
           className="relative group rounded-2xl transition-transform duration-500 mb-16"
         >
-          <div className="absolute inset-0 -z-10 rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500 bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 blur-3xl animate-pulse"></div>
+          <div className="absolute inset-0 -z-10 rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500 bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 blur-3xl"></div>
 
           <div className="relative z-10 bg-gray-800 rounded-2xl p-8 shadow-lg">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -212,7 +212,7 @@ const TeamSection = () => {
               className="relative group rounded-2xl transition-all duration-500"
             >
               {/* Neon glow on hover */}
-              <div className="absolute inset-0 -z-10 rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500 bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 blur-3xl animate-pulse"></div>
+              <div className="absolute inset-0 -z-10 rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500 bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 blur-3xl"></div>
 
               <div className="relative z-10 bg-gray-800 rounded-2xl overflow-hidden shadow-lg h-full flex flex-col">
                 {/* Member Image */}
@@ -313,7 +313,7 @@ const TeamSection = () => {
           className="text-center mt-16"
         >
           <div className="relative group rounded-2xl transition-transform duration-500 inline-block">
-            <div className="absolute inset-0 -z-10 rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500 bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 blur-3xl animate-pulse"></div>
+            <div className="absolute inset-0 -z-10 rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500 bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 blur-3xl"></div>
 
             <div className="relative z-10 bg-gray-800 rounded-2xl p-10 shadow-lg">
               <h3 className="text-3xl font-bold text-white mb-4">
