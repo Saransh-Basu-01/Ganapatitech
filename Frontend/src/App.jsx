@@ -7,6 +7,7 @@ import AboutSection from "./components/AboutSection";
 import PortfolioSection from "./components/PortfolioSection";
 import TeamSection from "./components/TeamSection";
 import ContactSection from "./components/ContactSection";
+import BlogSection from "./components/BlogSection";
 const App = () => {
   return (
     <div className="bg-slate-900 text-white">
@@ -34,12 +35,10 @@ const App = () => {
         id="team"
         className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-950 via-blue-900 to-slate-900"
       >
-        {/* <h2 className="text-5xl md:text-6xl font-bold text-orange-300 drop-shadow-2xl">
-          Team
-        </h2> */}
         <TeamSection />
       </section>
 
+      <BlogSection />
       {/* Portfolio Section - Deep Slate with Orange */}
       <section
         id="portfolio"
