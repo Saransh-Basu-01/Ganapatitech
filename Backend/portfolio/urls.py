@@ -1,14 +1,13 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import ProjectViewSet, ProjectCategoryViewSet, TechnologyViewSet, ProjectImageViewSet
-
-app_name = 'portfolio'
+from .views import PortfolioViewSet, PortfolioCategoryViewSet, TechnologyViewSet
 
 router = DefaultRouter()
-router.register(r'projects', ProjectViewSet, basename='project')
-router.register(r'categories', ProjectCategoryViewSet, basename='category')
+router.register(r'portfolio', PortfolioViewSet, basename='portfolio')
+router.register(r'portfolio-categories', PortfolioCategoryViewSet, basename='portfolio-category')
 router.register(r'technologies', TechnologyViewSet, basename='technology')
-router.register(r'images', ProjectImageViewSet, basename='image')
+
+app_name = 'portfolio'
 
 urlpatterns = [
     path('', include(router.urls)),

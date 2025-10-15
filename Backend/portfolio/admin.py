@@ -1,71 +1,145 @@
 from django.contrib import admin
-
-# Register your models here.
-from django.contrib import admin
-from .models import Project, ProjectCategory, Technology, ProjectImage
+from django.utils.html import format_html
+from .models import Portfolio, PortfolioCategory, Technology, PortfolioImage
 
 
-@admin.register(ProjectCategory)
-class ProjectCategoryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'slug', 'created_at']
-    search_fields = ['name']
+class PortfolioImageInline(admin.TabularInline):
+    model = PortfolioImage
+    extra = 1
+    fields = ['image', 'caption', 'order']
+    ordering = ['order']
+
+
+@admin.register(PortfolioCategory)
+class PortfolioCategoryAdmin(admin.ModelAdmin):
+    list_display = ['name', 'slug', 'order', 'is_active', 'projects_count', 'created_at']
+    list_filter = ['is_active', 'created_at']
+    search_fields = ['name', 'description']
     prepopulated_fields = {'slug': ('name',)}
+    ordering = ['order', 'name']
+    readonly_fields = ['created_at', 'updated_at']  # Removed 'slug' from here
+
+    def projects_count(self, obj):
+        return obj.portfolios.count()
+    projects_count.short_description = 'Projects'
 
 
 @admin.register(Technology)
 class TechnologyAdmin(admin.ModelAdmin):
-    list_display = ['name', 'slug', 'color', 'created_at']
+    list_display = ['name', 'slug', 'icon', 'color_preview', 'created_at']
     search_fields = ['name']
     prepopulated_fields = {'slug': ('name',)}
-    list_editable = ['color']
+    ordering = ['name']
+
+    def color_preview(self, obj):
+        if obj.color:
+            return format_html(
+                '<div style="width: 20px; height: 20px; background-color: {}; border: 1px solid #ccc;"></div>',
+                obj.color
+            )
+        return '-'
+    color_preview.short_description = 'Color'
 
 
-class ProjectImageInline(admin.TabularInline):
-    model = ProjectImage
-    extra = 1
-    fields = ['image', 'caption', 'order']
-
-
-@admin.register(Project)
-class ProjectAdmin(admin.ModelAdmin):
-    list_display = ['title', 'client_name', 'category', 'status', 'is_featured', 'order', 'views_count', 'completed_date']
-    list_filter = ['status', 'is_featured', 'category', 'completed_date']
-    search_fields = ['title', 'client_name', 'description']
-    prepopulated_fields = {'slug': ('title',)}
+@admin.register(Portfolio)
+class PortfolioAdmin(admin.ModelAdmin):
+    list_display = [
+        'title', 'category', 'client', 'completion_date',
+        'image_preview', 'featured', 'is_published',
+        'view_count', 'created_at'
+    ]
+    list_filter = ['featured', 'is_published', 'category', 'technologies', 'completion_date']
+    search_fields = ['title', 'description', 'client', 'technologies__name']
+    list_editable = ['featured', 'is_published']
+    prepopulated_fields = {'slug': ('title',)}  # This auto-generates slug from title
     filter_horizontal = ['technologies']
-    date_hierarchy = 'completed_date'
-    inlines = [ProjectImageInline]
-    list_editable = ['order', 'is_featured']
-    
+    readonly_fields = ['view_count', 'image_preview', 'thumbnail_preview', 'created_at', 'updated_at']  # Removed 'slug'
+    inlines = [PortfolioImageInline]
+    ordering = ['-featured', 'order', '-completion_date']
+
     fieldsets = (
-        ('Project Information', {
-            'fields': ('title', 'slug', 'client_name', 'category', 'technologies')
+        ('Basic Information', {
+            'fields': ('title', 'slug', 'description', 'short_description')
         }),
-        ('Content', {
-            'fields': ('short_description', 'description', 'case_study', 'featured_image')
+        ('Project Details', {
+            'fields': ('category', 'technologies', 'client')
+        }),
+        ('Dates', {
+            'fields': ('start_date', 'completion_date')
         }),
         ('Links', {
-            'fields': ('project_url', 'github_url')
+            'fields': ('project_url', 'github_url', 'demo_link')
         }),
-        ('Metrics & Results', {
-            'fields': ('metrics',),
-            'classes': ('collapse',)
+        ('Media', {
+            'fields': ('image', 'image_preview', 'thumbnail', 'thumbnail_preview')
         }),
-        ('Settings', {
-            'fields': ('status', 'is_featured', 'order', 'completed_date')
+        ('Display Settings', {
+            'fields': ('featured', 'is_published', 'order')
         }),
         ('Statistics', {
-            'fields': ('views_count',),
+            'fields': ('view_count',),
+            'classes': ('collapse',)
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
             'classes': ('collapse',)
         }),
     )
-    
-    readonly_fields = ['views_count']
+
+    def image_preview(self, obj):
+        if obj.image:
+            return format_html(
+                '<img src="{}" width="150" height="150" style="object-fit: cover;" />',
+                obj.image.url
+            )
+        return "No image"
+    image_preview.short_description = 'Image Preview'
+
+    def thumbnail_preview(self, obj):
+        if obj.thumbnail:
+            return format_html(
+                '<img src="{}" width="100" height="100" style="object-fit: cover;" />',
+                obj.thumbnail.url
+            )
+        return "No thumbnail"
+    thumbnail_preview.short_description = 'Thumbnail Preview'
+
+    # Custom actions for bulk operations
+    actions = ['make_featured', 'remove_featured', 'publish', 'unpublish']
+
+    def make_featured(self, request, queryset):
+        updated = queryset.update(featured=True)
+        self.message_user(request, f'{updated} project(s) marked as featured.')
+    make_featured.short_description = "Mark as featured"
+
+    def remove_featured(self, request, queryset):
+        updated = queryset.update(featured=False)
+        self.message_user(request, f'{updated} project(s) removed from featured.')
+    remove_featured.short_description = "Remove from featured"
+
+    def publish(self, request, queryset):
+        updated = queryset.update(is_published=True)
+        self.message_user(request, f'{updated} project(s) published.')
+    publish.short_description = "Publish selected projects"
+
+    def unpublish(self, request, queryset):
+        updated = queryset.update(is_published=False)
+        self.message_user(request, f'{updated} project(s) unpublished.')
+    unpublish.short_description = "Unpublish selected projects"
 
 
-@admin.register(ProjectImage)
-class ProjectImageAdmin(admin.ModelAdmin):
-    list_display = ['project', 'caption', 'order', 'created_at']
-    list_filter = ['project', 'created_at']
-    search_fields = ['project__title', 'caption']
-    list_editable = ['order']
+@admin.register(PortfolioImage)
+class PortfolioImageAdmin(admin.ModelAdmin):
+    list_display = ['portfolio', 'image_preview', 'caption', 'order', 'created_at']
+    list_filter = ['portfolio', 'created_at']
+    search_fields = ['portfolio__title', 'caption']
+    ordering = ['portfolio', 'order']
+
+    def image_preview(self, obj):
+        if obj.image:
+            return format_html(
+                '<img src="{}" width="100" height="100" style="object-fit: cover;" />',
+                obj.image.url
+            )
+        return "No image"
+    image_preview.short_description = 'Preview'

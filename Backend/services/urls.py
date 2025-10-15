@@ -3,9 +3,10 @@ from rest_framework.routers import DefaultRouter
 from .views import ServiceViewSet
 
 router = DefaultRouter()
-router.register(r'services', ServiceViewSet)
-# router.register(r'categories', ServiceCategoryViewSet)
+router.register(r'services', ServiceViewSet, basename='service')
+
+app_name = 'services'
 
 urlpatterns = [
-    path('api/', include(router.urls)),
+    path('', include(router.urls)),
 ]
