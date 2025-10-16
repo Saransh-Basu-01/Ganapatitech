@@ -43,9 +43,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Must be before CommonMiddleware
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',  # For static files in production
-    'corsheaders.middleware.CorsMiddleware',  # Must be before CommonMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -124,6 +124,8 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # Create React App port
     'http://127.0.0.1:5173',
     'http://127.0.0.1:3000',
+    'http://localhost:5174',
+    'http://127.0.0.1:5174',
 ]
 
 CORS_ALLOW_CREDENTIALS = True

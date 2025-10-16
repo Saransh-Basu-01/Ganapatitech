@@ -13,9 +13,17 @@ class TeamMemberViewSet(viewsets.ModelViewSet):
     ordering_fields = ['name', 'created_at']
     ordering = ['name']
 
+    pagination_class = None
+
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
             permission_classes = [AllowAny]
         else:
             permission_classes = [IsAdminUser]
         return [permission() for permission in permission_classes]
+    
+    def get_serializer_context(self):
+        """Pass request context to serializer"""
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
