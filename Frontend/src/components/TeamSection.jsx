@@ -4,23 +4,16 @@ import { Linkedin, Twitter, Github, Mail } from "lucide-react";
 import { teamAPI } from "../services/teamapi";
 
 const TeamSection = () => {
-  const [teamData, setTeamData] = useState({ members: [] });
+  const [teamData, setTeamData] = useState({ results: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch team members from backend
   useEffect(() => {
     const fetchTeam = async () => {
       try {
         const data = await teamAPI.getAll();
         console.log("Team API response:", data);
-        
-        // Handle both cases: if data is an array or an object with members property
-        if (Array.isArray(data)) {
-          setTeamData({ members: data });
-        } else {
-          setTeamData(data);
-        }
+        setTeamData(data); // keep the paginated object
       } catch (error) {
         console.error("Error fetching team data:", error);
         setError(error.message);
@@ -48,6 +41,8 @@ const TeamSection = () => {
     );
   }
 
+  const members = teamData.results || []; // use results array
+
   return (
     <section id="team" className="py-20 bg-gray-900 min-h-screen relative w-full">
       <div className="absolute inset-0 bg-gray-900 w-full h-full"></div>
@@ -74,8 +69,8 @@ const TeamSection = () => {
 
         {/* Team Members Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {teamData.members && teamData.members.length > 0 ? (
-            teamData.members.map((member, index) => (
+          {members.length > 0 ? (
+            members.map((member, index) => (
               <motion.div
                 key={member.id}
                 initial={{ opacity: 0, y: 50 }}
@@ -88,16 +83,14 @@ const TeamSection = () => {
                 <div className="absolute inset-0 -z-10 rounded-2xl opacity-0 group-hover:opacity-50 transition-opacity duration-500 bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 blur-3xl"></div>
 
                 <div className="relative z-10 bg-gray-800 rounded-2xl overflow-hidden shadow-lg h-full flex flex-col">
-                  {/* Member Image */}
                   <div className="relative overflow-hidden">
                     <img
-                      src={member.image}
+                      src={member.photo}
                       alt={member.name}
                       className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-60"></div>
 
-                    {/* Social Links Overlay */}
                     <div className="absolute inset-0 bg-gray-900/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
                       {member.linkedin && (
                         <motion.a
@@ -148,7 +141,6 @@ const TeamSection = () => {
                     </div>
                   </div>
 
-                  {/* Member Info */}
                   <div className="p-6 flex-1 flex flex-col">
                     <h3 className="text-xl font-bold text-white mb-1 group-hover:text-orange-300 transition-colors">
                       {member.name}
@@ -156,23 +148,6 @@ const TeamSection = () => {
                     <p className="text-orange-400 text-sm font-semibold mb-3">
                       {member.role}
                     </p>
-                    <p className="text-gray-400 text-sm mb-4 flex-1">
-                      {member.bio}
-                    </p>
-
-                    {/* Expertise Tags */}
-                    {member.expertise && (
-                      <div className="flex flex-wrap gap-2">
-                        {member.expertise.map((skill, i) => (
-                          <span
-                            key={i}
-                            className="bg-gray-700 text-gray-300 text-xs px-3 py-1 rounded-full"
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                    )}
                   </div>
                 </div>
               </motion.div>
