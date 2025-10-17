@@ -7,6 +7,7 @@ import AboutSection from "./components/AboutSection";
 import PortfolioSection from "./components/PortfolioSection";
 import TeamSection from "./components/TeamSection";
 import ContactSection from "./components/ContactSection";
+import BlogSection from "./components/BlogSection";
 import Footer from "./components/Footer";
 const App = () => {
   return (
@@ -35,6 +36,7 @@ const App = () => {
         <TeamSection />
       </section>
 
+      <BlogSection />
       {/* Portfolio Section - Deep Slate with Orange */}
       <section
         id="portfolio"
@@ -51,7 +53,7 @@ const App = () => {
         <ContactSection />
       </section>
       <section>
-        <Footer/>
+        <Footer />
       </section>
     </div>
   );

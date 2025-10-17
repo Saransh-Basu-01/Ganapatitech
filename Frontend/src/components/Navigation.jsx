@@ -11,6 +11,7 @@ const Navigation = () => {
     { label: "About", href: "#about" },
     { label: "Services", href: "#services" },
     { label: "Team", href: "#team" },
+    { label: "Blog/Insights", href: "#blog" },
     { label: "Portfolio", href: "#portfolio" },
     { label: "Contact", href: "#contact" },
   ];
@@ -23,7 +24,7 @@ const Navigation = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-//  Auto-detect active section on scroll - FIXED VERSION
+  //  Auto-detect active section on scroll - FIXED VERSION
   useEffect(() => {
     const sections = document.querySelectorAll("section[id]");
 
@@ -52,7 +53,6 @@ const Navigation = () => {
     };
   }, []); // Empty dependency array is fine now
 
- 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (isOpen) {
@@ -290,4 +290,3 @@ const Navigation = () => {
 };
 
 export default Navigation;
-
