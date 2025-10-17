@@ -105,12 +105,12 @@ const ContactSection = () => {
 
     } catch (error) {
       console.error('Contact form submission error:', error);
-      
+
       // Handle validation errors
       if (error.response && error.response.data) {
         const errors = error.response.data;
         let errorMessage = "Please fix the following errors:\n";
-        
+
         Object.keys(errors).forEach((key) => {
           if (Array.isArray(errors[key])) {
             errorMessage += `${key}: ${errors[key].join(', ')}\n`;
@@ -118,7 +118,7 @@ const ContactSection = () => {
             errorMessage += `${key}: ${errors[key]}\n`;
           }
         });
-        
+
         setFormStatus({
           type: "error",
           message: errorMessage,
@@ -329,11 +329,10 @@ const ContactSection = () => {
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className={`flex items-start gap-2 p-4 rounded-lg ${
-                      formStatus.type === "success"
+                    className={`flex items-start gap-2 p-4 rounded-lg ${formStatus.type === "success"
                         ? "bg-green-500/20 text-green-300 border border-green-500/50"
                         : "bg-red-500/20 text-red-300 border border-red-500/50"
-                    }`}
+                      }`}
                   >
                     {formStatus.type === "success" ? (
                       <Check className="w-5 h-5 flex-shrink-0 mt-0.5" />
@@ -376,13 +375,12 @@ const ContactSection = () => {
             viewport={{ once: true }}
             className="space-y-8"
           >
-            {/* Map */}
             <div className="relative group rounded-2xl transition-all duration-500 overflow-hidden">
               <div className="absolute inset-0 -z-10 rounded-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-500 bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 blur-3xl"></div>
 
               <div className="relative z-10 bg-gray-800 rounded-2xl overflow-hidden shadow-lg h-64">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d241317.11609823277!2d72.74109995709658!3d19.082177513865436!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c6306644edc1%3A0x5da4ed8f8d648c69!2sMumbai%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1697284800000!5m2!1sen!2sin"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3533.226308526939!2d85.42468407544386!3d27.678734676191702!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb1a37e2a6a2a1%3A0x6f54f7f5b90b79c9!2sRadhe%20Radhe%2C%20Bhaktapur%2044800%2C%20Nepal!5e0!3m2!1sen!2snp!4v1734440000000!5m2!1sen!2snp"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
@@ -393,75 +391,76 @@ const ContactSection = () => {
                   className="grayscale hover:grayscale-0 transition-all duration-500"
                 ></iframe>
               </div>
-            </div>
-
-            {/* Why Choose Us */}
-            <div className="relative group rounded-2xl transition-all duration-500">
-              <div className="absolute inset-0 -z-10 rounded-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-500 bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 blur-3xl"></div>
-
-              <div className="relative z-10 bg-gray-800 rounded-2xl p-8 shadow-lg">
-                <h3 className="text-2xl font-bold text-white mb-4">
-                  Why Choose GANPATI?
-                </h3>
-                <ul className="space-y-3">
-                  {[
-                    "24/7 Customer Support",
-                    "Expert Team of Professionals",
-                    "Cutting-Edge Technology",
-                    "Affordable Pricing",
-                    "On-Time Delivery",
-                  ].map((item, index) => (
-                    <motion.li
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      viewport={{ once: true }}
-                      className="flex items-center text-gray-300"
-                    >
-                      <Check className="w-5 h-5 text-orange-400 mr-3 flex-shrink-0" />
-                      {item}
-                    </motion.li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </motion.div>
+            {/* </div> */}
         </div>
 
-        {/* Social Media Links */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="text-center"
-        >
-          <div className="relative group rounded-2xl transition-transform duration-500 inline-block">
-            <div className="absolute inset-0 -z-10 rounded-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-500 bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 blur-3xl"></div>
+        {/* Why Choose Us */}
+        <div className="relative group rounded-2xl transition-all duration-500">
+          <div className="absolute inset-0 -z-10 rounded-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-500 bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 blur-3xl"></div>
 
-            <div className="relative z-10 bg-gray-800 rounded-2xl p-8 shadow-lg">
-              <h3 className="text-2xl font-bold text-white mb-6">Follow Us</h3>
-              <div className="flex flex-wrap justify-center gap-4">
-                {contactData.socialLinks.map((social, index) => (
-                  <motion.a
-                    key={index}
-                    whileHover={{ scale: 1.1, y: -5 }}
-                    whileTap={{ scale: 0.95 }}
-                    href={social.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`${social.color} text-white font-semibold px-6 py-3 rounded-full shadow-lg transition-all`}
-                  >
-                    {social.name}
-                  </motion.a>
-                ))}
-              </div>
-            </div>
+          <div className="relative z-10 bg-gray-800 rounded-2xl p-8 shadow-lg">
+            <h3 className="text-2xl font-bold text-white mb-4">
+              Why Choose GANPATI?
+            </h3>
+            <ul className="space-y-3">
+              {[
+                "24/7 Customer Support",
+                "Expert Team of Professionals",
+                "Cutting-Edge Technology",
+                "Affordable Pricing",
+                "On-Time Delivery",
+              ].map((item, index) => (
+                <motion.li
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  className="flex items-center text-gray-300"
+                >
+                  <Check className="w-5 h-5 text-orange-400 mr-3 flex-shrink-0" />
+                  {item}
+                </motion.li>
+              ))}
+            </ul>
           </div>
-        </motion.div>
+        </div>
+      </motion.div>
+    </div>
+
+        {/* Social Media Links */ }
+  <motion.div
+    initial={{ opacity: 0, y: 30 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.8 }}
+    viewport={{ once: true }}
+    className="text-center"
+  >
+    <div className="relative group rounded-2xl transition-transform duration-500 inline-block">
+      <div className="absolute inset-0 -z-10 rounded-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-500 bg-gradient-to-br from-red-500 via-yellow-400 to-blue-500 blur-3xl"></div>
+
+      <div className="relative z-10 bg-gray-800 rounded-2xl p-8 shadow-lg">
+        <h3 className="text-2xl font-bold text-white mb-6">Follow Us</h3>
+        <div className="flex flex-wrap justify-center gap-4">
+          {contactData.socialLinks.map((social, index) => (
+            <motion.a
+              key={index}
+              whileHover={{ scale: 1.1, y: -5 }}
+              whileTap={{ scale: 0.95 }}
+              href={social.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${social.color} text-white font-semibold px-6 py-3 rounded-full shadow-lg transition-all`}
+            >
+              {social.name}
+            </motion.a>
+          ))}
+        </div>
       </div>
-    </section>
+    </div>
+  </motion.div>
+      </div >
+    </section >
   );
 };
 

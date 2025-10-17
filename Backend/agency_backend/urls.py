@@ -29,7 +29,7 @@ def api_root(request):
         'version': 'v1',
         'endpoints': {
             'services': '/api/v1/services/',
-            'blog': '/api/v1/blog/',
+            'blog': '/api/v1/blogs/',
             'contact': '/api/v1/contact/',
             'teams': '/api/v1/teams/',
             'portfolio': '/api/v1/portfolio/',
